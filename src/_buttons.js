@@ -1,5 +1,4 @@
-//import {runUserAction} from './_states.js';
-import {runUserAction} from './_states2.js';
+import { runUserAction } from './_states.js';
 
 //lighting selected icons through buttons
 
@@ -29,23 +28,3 @@ export function initButtons() {
   document.querySelector('.right-btn').addEventListener('click', rightButtonClick);
   document.querySelector('.middle-btn').addEventListener('click', middleButtonClick);
 }
-
-/*BRIAN VERSION
-
-export function buttonsCommander() {
-  let selectedIcon = 0;
-  function buttonClick(event) {
-    if (event.target.classList.contains('left-btn')) {
-      iconHighlighted(selectedIcon, false);
-      selectedIcon > 0 ? selectedIcon-- : (selectedIcon = 2);
-      iconHighlighted(selectedIcon, true);
-    } else if (event.target.classList.contains('right-btn')) {
-      iconHighlighted(selectedIcon, false);
-      selectedIcon < 2 ? selectedIcon++ : (selectedIcon = 0);
-      iconHighlighted(selectedIcon, true);
-    } else if (event.target.classList.contains('middle-btn')) {
-      console.log("do it now!")
-    }
-  }
-  document.querySelector('.buttons').addEventListener('click', buttonClick);
-}*/
