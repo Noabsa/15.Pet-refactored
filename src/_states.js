@@ -4,6 +4,7 @@ import { pet, statesMap } from './_pet.js';
 export function runUserAction(icon) {
   if (pet.currentState === 'started' || pet.currentState === 'dead') {
     gameRunner.moodPetSwitcher('egg');
+    document.querySelector(`.modal-inner`).classList.toggle('hidden');
     return;
   }
   switch (icon) {
@@ -37,6 +38,7 @@ export const gameRunner = {
       pet.isCelebrating();
     } else if (state === 'dead') {
       pet.isDead();
+      document.querySelector(`.modal-inner`).classList.toggle('hidden');
     } else if (state === 'pooping') {
       pet.isPooping();
     } else if (state === 'pooped') {
