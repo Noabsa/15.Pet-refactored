@@ -5,6 +5,7 @@ export function runUserAction(icon) {
   if (pet.currentState === 'started' || pet.currentState === 'dead') {
     gameRunner.moodPetSwitcher('egg');
     document.querySelector(`.modal-inner`).classList.toggle('hidden');
+    //integration raining chances
     return;
   }
   switch (icon) {
@@ -16,6 +17,7 @@ export function runUserAction(icon) {
       break;
     case 'weather':
       pet.orderSleep();
+      //activate Sleeping Mode
       break;
   }
   return pet.currentState;
@@ -46,6 +48,7 @@ export const gameRunner = {
     } else if (state === 'poop-bag') {
       pet.isCleaning();
     }
+    //to function Sleeping mode
 
     pet.currentState = statesMap[pet.currentState];
     console.log('Next state, ', pet.currentState, 'at clock', timer.timeToChange);
