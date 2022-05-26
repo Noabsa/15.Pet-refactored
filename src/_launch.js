@@ -25,8 +25,8 @@ function initGame() {
       if (timer.timeToChange === timer.clock && timer.timeToChange > 0) {
         if (pet.currentState === 'waitingToEat' || pet.currentState === 'waitToClean') {
           pet.currentState = 'dead';
-          timer.timeToChange = 0;
         }
+        timer.timeToChange = 0;
       } else if (timer.timeToChange < timer.clock && pet.currentState !== 'started') {
         gameRunner.moodPetSwitcher(pet.currentState);
       } else {

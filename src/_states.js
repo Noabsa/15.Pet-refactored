@@ -20,6 +20,7 @@ export function runUserAction(icon) {
       //activate Sleeping Mode
       break;
   }
+
   return pet.currentState;
 }
 
@@ -47,8 +48,9 @@ export const gameRunner = {
       pet.isPooped();
     } else if (state === 'poop-bag') {
       pet.isCleaning();
+    } else if (state === 'sleep') {
+      pet.isSleeping();
     }
-    //to function Sleeping mode
 
     pet.currentState = statesMap[pet.currentState];
     console.log('Next state, ', pet.currentState, 'at clock', timer.timeToChange);

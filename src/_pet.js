@@ -1,6 +1,6 @@
 import { timer } from './_launch.js';
 
-let randomTime = Math.round(10 * Math.random());
+let randomTime = Math.round(5 * Math.random() + 5);
 
 export const statesMap = {
   started: 'idling',
@@ -15,6 +15,8 @@ export const statesMap = {
   waitToClean: 'poop-bag',
   'poop-bag': 'celebrate',
   dead: 'started',
+  sleep: 'idling',
+  rain: false,
 };
 
 export let pet = {
@@ -27,36 +29,42 @@ export let pet = {
   isIdling() {
     console.log('Current state is', this.currentState);
     timer.waitingTime(randomTime);
+    //statesMap.sleeping = true;
   },
   isHungry() {
-    console.log('Feed me!! before', randomTime + 3);
+    console.log('Feed me!! before', randomTime + 3, 'Current state is', this.currentState);
     timer.waitingTime(randomTime + 3);
   },
   isEating() {
-    console.log('Feed and happy!!');
+    console.log('Feed and happy!!', 'Current state is', this.currentState);
     timer.waitingTime(3);
   },
   isPooping() {
-    console.log('Ups!! Nature calling in 5');
+    console.log('Ups!! Nature calling in 5', 'Current state is', this.currentState);
     timer.waitingTime(5);
   },
   isPooped() {
-    console.log('Clean me!! before', randomTime + 10);
+    console.log('Clean me!! before', randomTime + 10, 'Current state is', this.currentState);
     timer.waitingTime(randomTime + 10);
   },
   isCelebrating() {
     document.querySelector(`.poop-bag`).classList.toggle('hidden', true);
-    console.log('Keep calm!! in', randomTime);
+    console.log('Keep calm!! in', randomTime, 'Current state is', this.currentState);
     timer.waitingTime(randomTime);
+    // statesMap.sleeping = true;
   },
   isCleaning() {
     document.querySelector(`.poop-bag`).classList.toggle('hidden', false);
-    console.log("I'm cleaning!!!, Complete in 3!");
+    console.log("I'm cleaning!!!, Complete in 3!", 'Current state is', this.currentState);
     timer.waitingTime(3);
   },
   isDead() {
-    console.log('game over!');
+    console.log('game over!', 'Current state is', this.currentState);
     statesMap.idling = 'hungry';
+  },
+  isSleeping() {
+    console.log('sleeeeeeping!');
+    timer.waitingTime(randomTime);
   },
   orderFeed() {
     if (this.currentState === 'waitingToEat') {
@@ -79,6 +87,12 @@ export let pet = {
     }
   },
   orderSleep() {
-    console.log('sleeping time');
+    if (this.currentState === statesMap.idling) {
+      timer.timeToChange = 0;
+      this.currentState = 'sleep';
+      console.log('sleeping time');
+    } else {
+      console.log('I cant sleep now!!');
+    }
   },
 };
