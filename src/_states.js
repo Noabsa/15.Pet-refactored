@@ -5,7 +5,6 @@ export function runUserAction(icon) {
   if (pet.currentState === 'started' || pet.currentState === 'dead') {
     gameRunner.moodPetSwitcher('egg');
     document.querySelector(`.modal-inner`).classList.toggle('hidden');
-    //integration raining chances
     return;
   }
   switch (icon) {
@@ -17,7 +16,6 @@ export function runUserAction(icon) {
       break;
     case 'weather':
       pet.orderSleep();
-      //activate Sleeping Mode
       break;
   }
 
@@ -41,7 +39,6 @@ export const gameRunner = {
       pet.isCelebrating();
     } else if (state === 'dead') {
       pet.isDead();
-      document.querySelector(`.modal-inner`).classList.toggle('hidden');
     } else if (state === 'pooping') {
       pet.isPooping();
     } else if (state === 'pooped') {

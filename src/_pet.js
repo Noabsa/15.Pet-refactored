@@ -16,7 +16,6 @@ export const statesMap = {
   'poop-bag': 'celebrate',
   dead: 'started',
   sleep: 'idling',
-  rain: false,
 };
 
 export let pet = {
@@ -28,8 +27,8 @@ export let pet = {
   },
   isIdling() {
     console.log('Current state is', this.currentState);
+    document.querySelector(`.day`).classList.toggle('night', false);
     timer.waitingTime(randomTime);
-    //statesMap.sleeping = true;
   },
   isHungry() {
     console.log('Feed me!! before', randomTime + 3, 'Current state is', this.currentState);
@@ -51,7 +50,6 @@ export let pet = {
     document.querySelector(`.poop-bag`).classList.toggle('hidden', true);
     console.log('Keep calm!! in', randomTime, 'Current state is', this.currentState);
     timer.waitingTime(randomTime);
-    // statesMap.sleeping = true;
   },
   isCleaning() {
     document.querySelector(`.poop-bag`).classList.toggle('hidden', false);
@@ -60,11 +58,13 @@ export let pet = {
   },
   isDead() {
     console.log('game over!', 'Current state is', this.currentState);
+    document.querySelector(`.modal-inner`).classList.toggle('hidden');
     statesMap.idling = 'hungry';
   },
   isSleeping() {
     console.log('sleeeeeeping!');
     timer.waitingTime(randomTime);
+    document.querySelector(`.day`).classList.toggle('night', true);
   },
   orderFeed() {
     if (this.currentState === 'waitingToEat') {
