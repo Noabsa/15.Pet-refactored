@@ -4,15 +4,13 @@ export let randomTime = Math.round(5 * Math.random() + 5);
 
 export const statesMap = {
   started: 'idling',
-  idling: 'hungry', //or pooping
-  hungry: 'waitingToEat', //waiting
-  waitingToEat: 'eating', //eating or poop-bag
+  idling: 'hungry', // hungry or pooping
+  hungry: 'waiting',
+  waiting: 'eating', //eating or poop-bag
   eating: 'celebrate',
   celebrate: 'idling',
-  //idling: 'pooping',
   pooping: 'pooped',
-  pooped: 'waitToClean', //waiting
-  waitToClean: 'poop-bag',
+  pooped: 'waiting',
   'poop-bag': 'celebrate',
   dead: 'started',
   sleep: 'idling',
@@ -74,21 +72,23 @@ export let pet = {
     document.querySelector(`.foreground-rain`).style.display = 'initial';
   },
   orderFeed() {
-    if (this.currentState === 'waitingToEat') {
+    if (this.currentState === 'waiting' && statesMap.waiting === 'eating') {
       console.log('dinner time!!');
       timer.timeToChange = 0;
       pet.currentState = statesMap[pet.currentState];
       statesMap.idling = 'pooping';
+      statesMap.waiting = 'poop-bag';
     } else {
       console.log('not hungry enough');
     }
   },
   orderClean() {
-    if (this.currentState === 'waitToClean') {
+    if (this.currentState === 'waiting' && statesMap.waiting==="poop-bag") {
       console.log('cleaning time!!');
       timer.timeToChange = 0;
       pet.currentState = statesMap[pet.currentState];
       statesMap.idling = 'hungry';
+      statesMap.waiting = 'eating';
     } else {
       console.log('there is no poop');
     }

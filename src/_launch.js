@@ -1,4 +1,3 @@
-import { isForOfStatement } from 'typescript';
 import { initButtons } from './_buttons.js';
 import { pet, randomTime, statesMap } from './_pet.js';
 import { gameRunner } from './_states.js';
@@ -27,6 +26,7 @@ function initGame() {
       timer.clock++;
       timer.nextClock = now + timer.tempo;
 
+      //raining clock
       if (nextTimeToRain > 0) {
         nextTimeToRain = nextTimeToRain - 1;
         console.log('It will rain in', nextTimeToRain);
@@ -38,8 +38,9 @@ function initGame() {
         console.log('It will rain in', nextTimeToRain);
       }
 
+      //pet clock
       if (timer.timeToChange === timer.clock && timer.timeToChange > 0) {
-        if (pet.currentState === 'waitingToEat' || pet.currentState === 'waitToClean') {
+        if (pet.currentState === 'waiting') {
           pet.currentState = 'dead';
         }
         timer.timeToChange = 0;
