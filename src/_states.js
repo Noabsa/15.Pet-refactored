@@ -47,6 +47,8 @@ export const gameRunner = {
       pet.isCleaning();
     } else if (state === 'sleep') {
       pet.isSleeping();
+    } else if (state === 'rain') {
+      pet.isRaining();
     }
 
     pet.currentState = statesMap[pet.currentState];

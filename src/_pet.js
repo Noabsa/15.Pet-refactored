@@ -1,6 +1,6 @@
 import { timer } from './_launch.js';
 
-let randomTime = Math.round(5 * Math.random() + 5);
+export let randomTime = Math.round(5 * Math.random() + 5);
 
 export const statesMap = {
   started: 'idling',
@@ -16,6 +16,7 @@ export const statesMap = {
   'poop-bag': 'celebrate',
   dead: 'started',
   sleep: 'idling',
+  rain: 'idling',
 };
 
 export let pet = {
@@ -28,6 +29,7 @@ export let pet = {
   isIdling() {
     console.log('Current state is', this.currentState);
     document.querySelector(`.day`).classList.toggle('night', false);
+    document.querySelector(`.foreground-rain`).style.display = 'none';
     timer.waitingTime(randomTime);
   },
   isHungry() {
@@ -65,6 +67,11 @@ export let pet = {
     console.log('sleeeeeeping!');
     timer.waitingTime(randomTime);
     document.querySelector(`.day`).classList.toggle('night', true);
+  },
+  isRaining() {
+    timer.waitingTime(randomTime + 10);
+    console.log('It is raining!!');
+    document.querySelector(`.foreground-rain`).style.display = 'initial';
   },
   orderFeed() {
     if (this.currentState === 'waitingToEat') {
