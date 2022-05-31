@@ -5,14 +5,14 @@ import { gameRunner } from './_states.js';
 //Set game timer and speed
 export let timer = {
   tempo: 1000,
-  timeToRain: function () {
-    return randomTime * 5;
-  },
   clock: 0,
   nextClock: 0,
   timeToChange: 0,
   waitingTime(spare) {
     this.timeToChange = this.clock + spare;
+  },
+  timeToRain: function () {
+    return randomTime * 5;
   },
 };
 
@@ -29,13 +29,10 @@ function initGame() {
       //raining clock
       if (nextTimeToRain > 0) {
         nextTimeToRain = nextTimeToRain - 1;
-        console.log('It will rain in', nextTimeToRain);
-      } else if (nextTimeToRain === 0 && pet.currentState === statesMap.idling) {
+      } else if (nextTimeToRain === 0 && pet.currentState === statesMap.idling.nextState) {
         pet.currentState = 'rain';
-        console.log('It will rain in', nextTimeToRain);
         nextTimeToRain = timer.timeToRain();
       } else {
-        console.log('It will rain in', nextTimeToRain);
       }
 
       //pet clock
@@ -47,7 +44,6 @@ function initGame() {
       } else if (timer.timeToChange < timer.clock && pet.currentState !== 'started') {
         gameRunner.moodPetSwitcher(pet.currentState);
       } else {
-        console.log('tick', timer.clock, 'at', now, 'and waiting');
       }
     }
     requestAnimationFrame(setTimer);
