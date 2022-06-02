@@ -1,10 +1,11 @@
-//██████╗ ███████╗████████╗       ██╗        ██████╗ ██████╗                ██╗      ██╗      █████╗ ██╗   ██╗███╗   ██╗ ██████╗██╗  ██╗███████╗██████╗ 
+//██████╗ ███████╗████████╗       ██╗        ██████╗ ██████╗                ██╗      ██╗      █████╗ ██╗   ██╗███╗   ██╗ ██████╗██╗  ██╗███████╗██████╗
 //██╔══██╗██╔════╝╚══██╔══╝       ██║       ██╔════╝██╔═══██╗               ╚██╗     ██║     ██╔══██╗██║   ██║████╗  ██║██╔════╝██║  ██║██╔════╝██╔══██╗
 //██████╔╝█████╗     ██║       ████████╗    ██║     ██║   ██║    █████╗█████╗╚██╗    ██║     ███████║██║   ██║██╔██╗ ██║██║     ███████║█████╗  ██████╔╝
 //██╔═══╝ ██╔══╝     ██║       ██╔═██╔═╝    ██║     ██║   ██║    ╚════╝╚════╝██╔╝    ██║     ██╔══██║██║   ██║██║╚██╗██║██║     ██╔══██║██╔══╝  ██╔══██╗
 //██║     ███████╗   ██║       ██████║      ╚██████╗╚██████╔╝               ██╔╝     ███████╗██║  ██║╚██████╔╝██║ ╚████║╚██████╗██║  ██║███████╗██║  ██║
 //╚═╝     ╚══════╝   ╚═╝       ╚═════╝       ╚═════╝ ╚═════╝                ╚═╝      ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
 
+import { overcare } from './_warnings.js';
 import { initButtons } from './_buttons.js';
 import { pet, randomTime, statesMap } from './_pet.js';
 import { gameRunner } from './_states.js';
@@ -21,17 +22,30 @@ export let timer = {
   timeToRain: function () {
     return randomTime * 5;
   },
+  modalShowTiming: { init: 5, countDown: -1 },
 };
 
 initButtons();
 
 function initGame() {
   let nextTimeToRain = timer.timeToRain();
+
   function setTimer() {
     const now = Date.now();
     if (timer.nextClock <= now) {
       timer.clock++;
       timer.nextClock = now + timer.tempo;
+
+      //modal advising clock
+      if (timer.modalShowTiming.countDown > 0) {
+        timer.modalShowTiming.countDown = timer.modalShowTiming.countDown - 1;
+      } else if (timer.modalShowTiming.countDown === 0) {
+        if (pet.currentState === 'started') {
+          overcare.modalAdviser('start', false);
+        } else {
+          overcare.modalAdviser('', true);
+        }
+      }
 
       //raining clock
       if (nextTimeToRain > 0) {
@@ -48,7 +62,7 @@ function initGame() {
           pet.currentState = 'dead';
         }
         timer.timeToChange = 0;
-      } else if (timer.timeToChange < timer.clock && pet.currentState !== 'started') {
+      } else if (timer.timeToChange <= timer.clock && pet.currentState !== 'started') {
         gameRunner.moodPetSwitcher(pet.currentState);
       } else {
       }

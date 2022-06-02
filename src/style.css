@@ -71,23 +71,21 @@ body {
   top: 300px;
   left: 160px;
 }
-.modal-inner {
+
+.modal {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
+  /*top: 300;*/
+  /*left: 440;*/
+  /*right: 60;*/
   background-color: blueviolet;
   color: white;
   padding: 25px;
   font-size: 20px;
   font-weight: bold;
   border-radius: 12px;
-}
-.modal:empty {
-  display: none;
-}
-.modal-inner:empty {
-  display: none;
 }
 .fox {
   position: absolute;

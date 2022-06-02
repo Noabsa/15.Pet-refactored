@@ -4,15 +4,15 @@
 //██╔═══╝ ██╔══╝     ██║       ██╔═██╔═╝    ██║     ██║   ██║    ╚════╝╚════╝██╔╝    ╚════██║   ██║   ██╔══██║   ██║   ██╔══╝  ╚════██║
 //██║     ███████╗   ██║       ██████║      ╚██████╗╚██████╔╝               ██╔╝     ███████║   ██║   ██║  ██║   ██║   ███████╗███████║
 //╚═╝     ╚══════╝   ╚═╝       ╚═════╝       ╚═════╝ ╚═════╝                ╚═╝      ╚══════╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝   ╚══════╝╚══════╝
-                                                                                                                                                      
 
 import { timer } from './_launch.js';
+import { overcare } from './_warnings.js';
 
 export let randomTime = Math.round(5 * Math.random() + 5);
 
 export const statesMap = {
   started: { nextState: 'idling', nextActionTime: 4 },
-  idling: { nextState: 'hungry', nextActionTime: randomTime }, // hungry or pooping
+  idling: { nextState: 'hungry', nextActionTime: randomTime }, // nextState: hungry or pooping
   hungry: { nextState: 'waiting', nextActionTime: randomTime + 3 },
   waiting: { nextState: 'eating' }, //eating or poop-bag
   eating: { nextState: 'celebrate', nextActionTime: 3 },
@@ -42,7 +42,8 @@ export let pet = {
     document.querySelector(`.poop-bag`).classList.toggle('hidden', false);
   },
   isDead() {
-    document.querySelector(`.modal-inner`).classList.toggle('hidden');
+    document.querySelector('.modal-inner').innerHTML = overcare.messages.start;
+    document.querySelector(`.modal`).classList.toggle('hidden', false);
     statesMap.idling.nextState = 'hungry';
   },
   isSleeping() {
@@ -54,28 +55,28 @@ export let pet = {
 
   //action-buttons functions
   orderFeed() {
+    overcare.feedUpCheck();
     if (this.currentState === 'waiting' && statesMap.waiting.nextState === 'eating') {
       timer.timeToChange = 0;
       pet.currentState = statesMap[pet.currentState].nextState;
       statesMap.idling.nextState = 'pooping';
       statesMap.waiting.nextState = 'poop-bag';
-    } else {
     }
   },
   orderClean() {
+    overcare.cleanCheck();
     if (this.currentState === 'waiting' && statesMap.waiting.nextState === 'poop-bag') {
       timer.timeToChange = 0;
       pet.currentState = statesMap[pet.currentState].nextState;
       statesMap.idling.nextState = 'hungry';
       statesMap.waiting.nextState = 'eating';
-    } else {
     }
   },
   orderSleep() {
+    overcare.sleepCheck();
     if (this.currentState === statesMap.idling.nextState) {
       timer.timeToChange = 0;
       this.currentState = 'sleep';
-    } else {
     }
   },
 };
