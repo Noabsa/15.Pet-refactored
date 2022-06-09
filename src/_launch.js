@@ -5,14 +5,20 @@
 //██║     ███████╗   ██║       ██████║      ╚██████╗╚██████╔╝               ██╔╝     ███████╗██║  ██║╚██████╔╝██║ ╚████║╚██████╗██║  ██║███████╗██║  ██║
 //╚═╝     ╚══════╝   ╚═╝       ╚═════╝       ╚═════╝ ╚═════╝                ╚═╝      ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
 
-import { overcare } from './_warnings.js';
+//import { overcare } from './_warnings.js';
 import { initButtons } from './_buttons.js';
 import { pet, randomTime, statesMap } from './_pet.js';
 import { gameRunner } from './_states.js';
 
 //Set game timer and speed
 export let timer = {
-  tempo: 1000,
+  //custom settings
+  tempo: 1000, //ms
+  rainingChances: 150, //percent
+  dayLength: 50, //secons
+  modalTime: 5000, //ms
+
+  //DO NOT TOUCH
   clock: 0,
   nextClock: 0,
   timeToChange: 0,
@@ -20,15 +26,18 @@ export let timer = {
     this.timeToChange = this.clock + spare;
   },
   timeToRain: function () {
-    return randomTime * 5;
+    let value = (20 * 100) / this.rainingChances;
+    return Math.round(value);
   },
-  modalShowTiming: { init: 5, countDown: -1 },
+  nextTimeToSleep: 0,
+  nextTimeToRain: 0,
 };
 
 initButtons();
 
 function initGame() {
-  let nextTimeToRain = timer.timeToRain();
+  timer.nextTimeToSleep = timer.dayLength;
+  timer.nextTimeToRain = timer.timeToRain();
 
   function setTimer() {
     const now = Date.now();
@@ -36,35 +45,32 @@ function initGame() {
       timer.clock++;
       timer.nextClock = now + timer.tempo;
 
-      //modal advising clock
-      if (timer.modalShowTiming.countDown > 0) {
-        timer.modalShowTiming.countDown = timer.modalShowTiming.countDown - 1;
-      } else if (timer.modalShowTiming.countDown === 0) {
-        if (pet.currentState === 'started') {
-          overcare.modalAdviser('start', false);
-        } else {
-          overcare.modalAdviser('', true);
-        }
+      //sleeping clock
+      if (pet.currentState === 'idling' && timer.nextTimeToSleep <= timer.clock) {
+        pet.currentState = 'sleep';
+        gameRunner.moodPetSwitcher(pet.currentState);
+        timer.nextTimeToSleep = timer.dayLength + timer.clock + statesMap.sleep.nextActionTime;
       }
 
       //raining clock
-      if (nextTimeToRain > 0) {
-        nextTimeToRain = nextTimeToRain - 1;
-      } else if (nextTimeToRain === 0 && pet.currentState === statesMap.idling.nextState) {
+      if (pet.currentState === 'idling' && timer.nextTimeToRain <= timer.clock) {
         pet.currentState = 'rain';
-        nextTimeToRain = timer.timeToRain();
-      } else {
+        gameRunner.moodPetSwitcher(pet.currentState);
+        timer.nextTimeToRain = timer.timeToRain() + timer.clock + statesMap.rain.nextActionTime;
       }
 
-      //pet clock
+      //general clock
       if (timer.timeToChange === timer.clock && timer.timeToChange > 0) {
-        if (pet.currentState === 'waiting') {
+        if (statesMap[pet.currentState].deadly) {
           pet.currentState = 'dead';
         }
-        timer.timeToChange = 0;
+        pet.currentState = statesMap[pet.currentState].nextState;
+        gameRunner.moodPetSwitcher(pet.currentState);
       } else if (timer.timeToChange <= timer.clock && pet.currentState !== 'started') {
+        pet.currentState = statesMap[pet.currentState].nextState;
         gameRunner.moodPetSwitcher(pet.currentState);
       } else {
+        console.log(timer.clock, timer.nextTimeToRain);
       }
     }
     requestAnimationFrame(setTimer);

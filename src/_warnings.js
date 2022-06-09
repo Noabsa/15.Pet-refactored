@@ -14,13 +14,23 @@ export let overcare = {
     idling: "I'm...",
     sleep: "I'm still sleeping!",
   },
-  modalAdviser(msg, hidden) {
+  showModal(msg, hidden = false) {
     document.querySelector('.modal-inner').innerHTML = this.messages[msg];
     document.querySelector('.modal').classList.toggle('hidden', hidden);
-    timer.modalShowTiming.countDown = timer.modalShowTiming.init;
+    setTimeout(() => {
+      this.showModal('', true);
+    }, timer.modalTime);
   },
+  feedUpCheck() {
+    if (statesMap.idling.nextState === 'hungry') {
+      this.showModal('earlyFood');
+    } else {
+      this.showModal('tooMuchFood');
+    }
+  },
+};
 
-  standardCheck(earlyArray, earlyMsg, tooMuchArray, tooMuchMsg) {
+/* standardCheck(earlyArray, earlyMsg, tooMuchArray, tooMuchMsg) {
     let nextState = statesMap[pet.currentState].nextState;
     let currentState = pet.currentState;
 
@@ -71,4 +81,4 @@ export let overcare = {
       overcare.modalAdviser(customSleepMsg(), false);
     }
   },
-};
+};*/

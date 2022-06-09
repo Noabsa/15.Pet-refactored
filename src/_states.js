@@ -5,12 +5,13 @@
 //██║     ███████╗   ██║       ██████║      ╚██████╗╚██████╔╝               ██╔╝     ███████║╚███╔███╔╝██║   ██║   ╚██████╗██║  ██║███████╗██║  ██║
 //╚═╝     ╚══════╝   ╚═╝       ╚═════╝       ╚═════╝ ╚═════╝                ╚═╝      ╚══════╝ ╚══╝╚══╝ ╚═╝   ╚═╝    ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
 
-import { pet, statesMap } from './_pet.js';
+import { pet } from './_pet.js';
 
 export function runUserAction(icon) {
   if (pet.currentState === 'started' || pet.currentState === 'dead') {
     gameRunner.moodPetSwitcher('egg');
     document.querySelector(`.modal`).classList.toggle('hidden', true);
+    pet.currentState = 'egg';
     return;
   }
   switch (icon) {
@@ -24,11 +25,12 @@ export function runUserAction(icon) {
       pet.orderSleep();
       break;
   }
+
   return pet.currentState;
 }
 
 export const gameRunner = {
-  simpleStates: ['started', 'hungry', 'eating', 'pooping', 'pooped'],
+  simpleStates: ['started', 'egg', 'hungry', 'eating', 'pooping', 'pooped'],
   moodPetSwitcher(state) {
     document.querySelector('.fox').className = `fox fox-${state}`;
     state = pet.currentState;
@@ -56,6 +58,5 @@ export const gameRunner = {
     if (state === 'dead') {
       pet.isDead();
     }
-    pet.currentState = statesMap[pet.currentState].nextState;
   },
 };
