@@ -6,7 +6,6 @@
 //╚═╝     ╚══════╝   ╚═╝       ╚═════╝       ╚═════╝ ╚═════╝                ╚═╝      ╚═════╝  ╚═════╝    ╚═╝      ╚═╝    ╚═════╝ ╚═╝  ╚═══╝╚══════╝
 
 import { runUserAction } from './_states.js';
-import { timer } from './_launch.js';
 
 //lighting selected icons through buttons
 

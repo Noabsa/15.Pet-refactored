@@ -7,12 +7,13 @@
 
 import { timer } from './_launch.js';
 import { overcare } from './_warnings.js';
+import { gameRunner } from './_states.js';
 
 export let randomTime = Math.round(5 * Math.random() + 5);
 
 export const statesMap = {
-  started: { nextState: 'egg', nextActionTime: 5 },
-  egg: { nextState: 'idling', nextActionTime: 1 },
+  started: { nextState: 'egg' },
+  egg: { nextState: 'idling', nextActionTime: 5 },
   idling: { nextState: 'hungry', nextActionTime: 6 }, // nextState: hungry or pooping or sleep
   hungry: { nextState: 'eating', nextActionTime: 3 * 3, deadly: true },
   eating: { nextState: 'celebrate', nextActionTime: 3 },
@@ -31,6 +32,23 @@ export let pet = {
   //pet and UI states-changes
   changesAction() {
     timer.waitingTime(statesMap[this.currentState].nextActionTime);
+  },
+  checkStatus() {
+    if (timer.getNexTimeToRain() < 0) {
+      timer.rainingChances.countDown = 0;
+      pet.currentState = 'rain';
+      gameRunner.moodPetSwitcher(pet.currentState);
+    } else if (timer.getNextTimeToSleep() < 0) {
+      timer.dayLength.countDown = 0;
+      pet.currentState = 'sleep';
+      gameRunner.moodPetSwitcher(pet.currentState);
+    }
+  },
+  hatch() {
+    timer.rainingChances.countDown = 0;
+    timer.dayLength.countDown = 0;
+    timer.modalTime.countDown = -5;
+    document.querySelector('.modal').classList.toggle('hidden', true);
   },
   isIdling() {
     document.querySelector(`.day`).classList.toggle('night', false);
@@ -53,7 +71,7 @@ export let pet = {
   },
   isSleeping() {
     document.querySelector(`.day`).classList.toggle('night', true);
-    timer.nextTimeToSleep = timer.dayLength;
+    timer.dayLength.countDown = 0;
   },
   isRaining() {
     document.querySelector(`.foreground-rain`).style.display = 'initial';
@@ -61,8 +79,6 @@ export let pet = {
 
   //action-buttons functions
   orderFeed() {
-    //overcare.feedUpCheck();
-    //overcare.showModal('sleep', false);
     overcare.feedUpCheck();
     if (this.currentState === 'hungry') {
       timer.timeToChange = 0;
@@ -70,15 +86,15 @@ export let pet = {
     }
   },
   orderClean() {
-    //overcare.cleanCheck();
+    overcare.cleanCheck();
     if (this.currentState === 'pooped') {
       timer.timeToChange = 0;
       statesMap.idling.nextState = 'hungry';
     }
   },
   orderSleep() {
-    //overcare.sleepCheck();
-    if (this.currentState === 'idling') {
+    overcare.sleepCheck();
+    if (this.currentState === 'idling' && timer.getNexTimeToRain() < 25) {
       statesMap.sleep.prevState = statesMap.idling.nextState;
       timer.timeToChange = 0;
       statesMap.idling.nextState = 'sleep';

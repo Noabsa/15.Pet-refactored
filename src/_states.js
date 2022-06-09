@@ -9,9 +9,8 @@ import { pet } from './_pet.js';
 
 export function runUserAction(icon) {
   if (pet.currentState === 'started' || pet.currentState === 'dead') {
-    gameRunner.moodPetSwitcher('egg');
-    document.querySelector(`.modal`).classList.toggle('hidden', true);
     pet.currentState = 'egg';
+    gameRunner.moodPetSwitcher('egg');
     return;
   }
   switch (icon) {
@@ -25,12 +24,11 @@ export function runUserAction(icon) {
       pet.orderSleep();
       break;
   }
-
   return pet.currentState;
 }
 
 export const gameRunner = {
-  simpleStates: ['started', 'egg', 'hungry', 'eating', 'pooping', 'pooped'],
+  simpleStates: ['started', 'hungry', 'eating', 'pooping', 'pooped'],
   moodPetSwitcher(state) {
     document.querySelector('.fox').className = `fox fox-${state}`;
     state = pet.currentState;
@@ -51,6 +49,8 @@ export const gameRunner = {
       pet.isSleeping();
     } else if (state === 'rain') {
       pet.isRaining();
+    } else if (state === 'egg') {
+      pet.hatch();
     }
     pet.changesAction();
 
