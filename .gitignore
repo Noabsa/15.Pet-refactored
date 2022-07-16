@@ -1,0 +1,7 @@
+.parcel-cache
+dist
+project-files-for-fox-game
+node_modules
+..templates
+.editorconfig
+.vscode/
